@@ -538,7 +538,7 @@ function createCellAbove(
 
 function mergeWithPreviousCell(
   state: NotebookModel,
-  action: actionTypes.MergeWithPreviousCell
+  action: actionTypes.MergeCell
 ): RecordOf<DocumentRecordProps> {
   const id = action.payload.id ? action.payload.id : state.cellFocused;
   if (!id) {
@@ -561,7 +561,7 @@ function mergeWithPreviousCell(
 
 function mergeWithNextCell(
   state: NotebookModel,
-  action: actionTypes.MergeWithNextCell
+  action: actionTypes.MergeCell
 ): RecordOf<DocumentRecordProps> {
   const id = action.payload.id ? action.payload.id : state.cellFocused;
   if (!id) {

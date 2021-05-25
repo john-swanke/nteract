@@ -57,19 +57,29 @@ const mapDispatchToProps = (
         })
       );
     },
-    mergeWithPreviousCell: () => {
-      dispatch(
-        actions.createCellBelow.with({ cellType: "code", source: "" })({
-          contentRef,
-        })
-      );
+    mergeWithPreviousCell: (cellIdAbove?: string) => {
+      if (!!cellIdAbove) {
+        dispatch(
+          actions.mergeCell({
+            contentRef,
+            id,
+            destinationId: cellIdAbove,
+            above: true
+          })
+        );
+      }
     },
-    mergeWithNextCell: () => {
-      dispatch(
-        actions.createCellAbove.with({ cellType: "code", source: "" })({
-          contentRef,
-        })
-      );
+    mergeWithNextCell: (cellIdBelow?: string) => {
+      if(!!cellIdBelow) {
+        dispatch(
+          actions.mergeCell({
+            contentRef,
+            id,
+            destinationId: cellIdBelow,
+            above: false
+          })
+        );
+      }
     },    
     restartAndRun: () => dispatch(actions.executeAllCells({ contentRef })),
     convertToMarkdown: () =>

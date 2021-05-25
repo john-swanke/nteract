@@ -34,15 +34,16 @@ interface DispatchProps {
     contentRef: ContentRef;
   }) => void;
   mergeWithPreviousCell: (payload: {
-    cellType: CellType;
-    id?: string;
     contentRef: ContentRef;
+    id: string;
+    destinationId: string;
+    above: boolean;
   }) => void;
   mergeWithNextCell: (payload: {
-    cellType: CellType;
-    id?: string;
-    source: string;
     contentRef: ContentRef;
+    id: string;
+    destinationId: string;
+    above: boolean;
   }) => void;  
 }
 
@@ -223,16 +224,17 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     contentRef: ContentRef;
   }) => dispatch(actions.createCellBelow(payload)),
   mergeWithPreviousCell: (payload: {
-    cellType: CellType;
-    id?: string;
     contentRef: ContentRef;
-  }) => dispatch(actions.mergeWithPreviousCell(payload)),
+    id: string;
+    destinationId: string;
+    above: boolean;
+  }) => dispatch(actions.mergeCell(payload)),
   mergeWithNextCell: (payload: {
-    cellType: CellType;
-    id?: string;
-    source: string;
     contentRef: ContentRef;
-  }) => dispatch(actions.mergeWithNextCell(payload))
+    id: string;
+    destinationId: string;
+    above: boolean;
+  }) => dispatch(actions.mergeCell(payload))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(CellCreator);

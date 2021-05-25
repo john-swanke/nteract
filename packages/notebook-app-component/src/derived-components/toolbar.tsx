@@ -245,7 +245,7 @@ export default class Toolbar extends React.PureComponent<
                         </CellMenuItem>
                         <CellMenuItem
                           onClick={this.performActionAndClose(
-                            context.insertCodeCellAbove
+                            context.mergeWithPreviousCell
                           )}
                           tabIndex={0}
                         >
@@ -254,7 +254,7 @@ export default class Toolbar extends React.PureComponent<
                         </CellMenuItem>
                         <CellMenuItem
                           onClick={this.performActionAndClose(
-                            context.insertCodeCellBelow
+                            context.mergeWithNextCell
                           )}
                           tabIndex={0}
                         >

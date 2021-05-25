@@ -35,6 +35,8 @@ export interface DispatchProps {
   markCellAsDeleting: () => void;
   insertCodeCellBelow: () => void;
   insertCodeCellAbove: () => void;
+  mergeWithPreviousCell: () => void;
+  mergeWithNextCell: () => void;
 }
 
 export const CellToolbarContext = React.createContext({});
@@ -119,7 +121,11 @@ const mapDispatchToProps = (
     insertCodeCellBelow: () =>
       dispatch(actions.createCellBelow({ cellType: "code", contentRef })),
     insertCodeCellAbove: () =>
-      dispatch(actions.createCellAbove({ cellType: "code", contentRef })),
+      dispatch(actions.mergeCell({ cellType: "code", contentRef })),
+    mergeWithPreviousCell: () =>
+      dispatch(actions.createCellBelow({ cellType: "code", contentRef })),
+    mergeWithNextCell: () =>
+      dispatch(actions.mergeCell({ cellType: "code", contentRef })),
   };
 };
 

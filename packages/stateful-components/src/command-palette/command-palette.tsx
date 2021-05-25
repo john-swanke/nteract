@@ -55,9 +55,10 @@ const mapDispatchToProps = (
         })
       );
     },
+    mergeWithPreviousCell: ()
     restartAndRun: () => dispatch(actions.executeAllCells({ contentRef })),
     convertToMarkdown: () =>
-      dispatch(actions.changeCellType.with({ contentRef })({ to: "markdown" })),
+      dispatch(actions.changeCellType.with({createCellAbove contentRef })({ to: "markdown" })),
     hideInput: () =>
       dispatch(actions.toggleCellInputVisibility({ id, contentRef })),
     hideOutput: () =>

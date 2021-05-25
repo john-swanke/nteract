@@ -536,50 +536,28 @@ function createCellAbove(
   });
 }
 
-function mergeWithPreviousCell(
+function mergeCell(
   state: NotebookModel,
   action: actionTypes.MergeCell
 ): RecordOf<DocumentRecordProps> {
-  const id = action.payload.id ? action.payload.id : state.cellFocused;
-  if (!id) {
-    return state;
-  }
-
-  const { cellType } = action.payload;
-  let cell: ImmutableCell =
-    cellType === "markdown" ? emptyMarkdownCell : emptyCodeCell;
-  if (action.payload.cell) {
-    cell = action.payload.cell;
-  }
-
-  const cellId = uuid();
-  return state.update("notebook", (notebook: ImmutableNotebook) => {
-    const index = notebook.get("cellOrder", List()).indexOf(id) + 1;
-    return insertCellAt(notebook, cell, cellId, index);
-  });
-}
-
-function mergeWithNextCell(
-  state: NotebookModel,
-  action: actionTypes.MergeCell
-): RecordOf<DocumentRecordProps> {
-  const id = action.payload.id ? action.payload.id : state.cellFocused;
-  if (!id) {
-    return state;
-  }
-
-  const { cellType } = action.payload;
-  let cell: ImmutableCell =
-    cellType === "markdown" ? emptyMarkdownCell : emptyCodeCell;
-  if (action.payload.cell) {
-    cell = action.payload.cell;
-  }
-  const cellId = uuid();
-  return state.update("notebook", (notebook: ImmutableNotebook) => {
-    const cellOrder: List<CellId> = notebook.get("cellOrder", List());
-    const index = cellOrder.indexOf(id);
-    return insertCellAt(notebook, cell, cellId, index);
-  });
+  return state.updateIn(
+    ["notebook", "cellOrder"],
+    (cellOrder: List<CellId>) => {
+      const oldIndex = cellOrder.findIndex(
+        (id: string) => id === action.payload.id
+      );
+      const newIndex =
+        cellOrder.findIndex(
+          (id: string) => id === action.payload.destinationId
+        ) + (action.payload.above ? 0 : 1);
+      if (oldIndex === newIndex) {
+        return cellOrder;
+      }
+      return cellOrder
+        .splice(oldIndex, 1)
+        .splice(newIndex - (oldIndex < newIndex ? 1 : 0), 0, action.payload.id);
+    }
+  );
 }
 
 
@@ -964,8 +942,7 @@ type DocumentAction =
   | actionTypes.DeleteCell
   | actionTypes.CreateCellBelow
   | actionTypes.CreateCellAbove
-  | actionTypes.MergeWithPreviousCell
-  | actionTypes.MergeWithNextCell
+  | actionTypes.MergeCell
   | actionTypes.CreateCellAppend
   | actionTypes.ToggleCellOutputVisibility
   | actionTypes.ToggleCellInputVisibility
@@ -1038,10 +1015,8 @@ export function notebook(
       return createCellBelow(state, action);
     case actionTypes.CREATE_CELL_ABOVE:
       return createCellAbove(state, action);
-    case actionTypes.MERGE_WITH_PREVIOUS_CELL:
-      return mergeWithPreviousCell(state, action);
-    case actionTypes.MERGE_WITH_NEXT_CELL:
-      return mergeWithNextCell(state, action);      
+    case actionTypes.MERGE_CELL:
+      return mergeCell(state, action);      
     case actionTypes.CREATE_CELL_APPEND:
       return createCellAppend(state, action);
     case actionTypes.TOGGLE_CELL_OUTPUT_VISIBILITY:

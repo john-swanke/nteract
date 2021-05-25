@@ -93,7 +93,12 @@ export const MergeWithPreviousCell: DesktopCommand<ReqContent> = {
   props: {
     contentRef: "required",
   },
-  makeAction: actions.mergeWithPreviousCell.with({ cellType: "markdown", source: "" }),
+  makeAction: actions.mergeCell.with({
+    contentRef: "",
+    id: "",
+    destinationId: "",
+    above: false
+  }),
 };
 
 export const MergeWithNextCell: DesktopCommand<ReqContent> = {
@@ -101,8 +106,10 @@ export const MergeWithNextCell: DesktopCommand<ReqContent> = {
   props: {
     contentRef: "required",
   },
-  makeAction: actions.mergeWithNextCell.with({
-    cellType: "markdown",
-    source: "",
+  makeAction: actions.mergeCell.with({
+    contentRef: "",
+    id: "",
+    destinationId: "",
+    above: false
   }),
 };

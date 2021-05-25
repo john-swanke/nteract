@@ -122,10 +122,16 @@ const mapDispatchToProps = (
       dispatch(actions.createCellBelow({ cellType: "code", contentRef })),
     insertCodeCellAbove: () =>
       dispatch(actions.createCellAbove({ cellType: "code", contentRef })),
-    mergeWithPreviousCell: () =>
-      dispatch(actions.mergeWithPreviousCell({ cellType: "code", contentRef })),
-    mergeWithNextCell: () =>
-      dispatch(actions.mergeWithNextCell({ cellType: "code", contentRef })),
+    mergeWithPreviousCell: (cellIdAbove?: string) => {
+      if (!!cellIdAbove) {
+        dispatch(actions.mergeCell({ contentRef, id, destinationId: cellIdAbove, above: true }))
+      }
+    },
+    mergeWithNextCell: (cellIdBelow?: string) => {
+      if (!!cellIdBelow) {
+        dispatch(actions.mergeCell({ contentRef, id, destinationId: cellIdBelow, above: false }))
+      }
+    }
   };
 };
 

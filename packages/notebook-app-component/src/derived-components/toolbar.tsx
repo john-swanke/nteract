@@ -359,6 +359,26 @@ export default class Toolbar extends React.PureComponent<
                           <a>Add Cell Below</a>
                         </CellMenuItem>
                       </CellMenuSection>
+                      <CellMenuSection>
+                        <CellMenuItem
+                          onClick={this.performActionAndClose(
+                            context.mergeWithPreviousCell
+                          )}
+                          tabIndex={0}
+                        >
+                          <Icons.AddCell />
+                          <a>Merge with Previous Cell</a>
+                        </CellMenuItem>
+                        <CellMenuItem
+                          onClick={this.performActionAndClose(
+                            context.mergeWithNextCell
+                          )}
+                          tabIndex={0}
+                        >
+                          <Icons.AddCell below />
+                          <a>Merge with Next Cell</a>
+                        </CellMenuItem>
+                      </CellMenuSection>                      
                     </StyledDropdownContent>
                   )}
                 </DropdownMenu>

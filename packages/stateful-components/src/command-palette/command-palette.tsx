@@ -8,6 +8,8 @@ import { actions, ContentRef } from "@nteract/core";
 export interface DispatchProps {
   addCellBelow: () => void;
   addCellAbove: () => void;
+  mergeWithPreviousCell: () => void;
+  mergeWithNextCell: () => void;
   restartAndRun: () => void;
   hideOutput: () => void;
   hideInput: () => void;
@@ -55,10 +57,23 @@ const mapDispatchToProps = (
         })
       );
     },
-    mergeWithPreviousCell: ()
+    mergeWithPreviousCell: () => {
+      dispatch(
+        actions.createCellBelow.with({ cellType: "code", source: "" })({
+          contentRef,
+        })
+      );
+    },
+    mergeWithNextCell: () => {
+      dispatch(
+        actions.createCellAbove.with({ cellType: "code", source: "" })({
+          contentRef,
+        })
+      );
+    },    
     restartAndRun: () => dispatch(actions.executeAllCells({ contentRef })),
     convertToMarkdown: () =>
-      dispatch(actions.changeCellType.with({createCellAbove contentRef })({ to: "markdown" })),
+      dispatch(actions.changeCellType.with({ contentRef })({ to: "markdown" })),
     hideInput: () =>
       dispatch(actions.toggleCellInputVisibility({ id, contentRef })),
     hideOutput: () =>

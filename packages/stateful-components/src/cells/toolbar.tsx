@@ -121,11 +121,11 @@ const mapDispatchToProps = (
     insertCodeCellBelow: () =>
       dispatch(actions.createCellBelow({ cellType: "code", contentRef })),
     insertCodeCellAbove: () =>
-      dispatch(actions.mergeCell({ cellType: "code", contentRef })),
+      dispatch(actions.createCellAbove({ cellType: "code", contentRef })),
     mergeWithPreviousCell: () =>
-      dispatch(actions.createCellBelow({ cellType: "code", contentRef })),
+      dispatch(actions.mergeWithPreviousCell({ cellType: "code", contentRef })),
     mergeWithNextCell: () =>
-      dispatch(actions.mergeCell({ cellType: "code", contentRef })),
+      dispatch(actions.mergeWithNextCell({ cellType: "code", contentRef })),
   };
 };
 

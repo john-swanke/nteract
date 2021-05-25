@@ -536,6 +536,53 @@ function createCellAbove(
   });
 }
 
+function mergeWithPreviousCell(
+  state: NotebookModel,
+  action: actionTypes.MergeWithPreviousCell
+): RecordOf<DocumentRecordProps> {
+  const id = action.payload.id ? action.payload.id : state.cellFocused;
+  if (!id) {
+    return state;
+  }
+
+  const { cellType } = action.payload;
+  let cell: ImmutableCell =
+    cellType === "markdown" ? emptyMarkdownCell : emptyCodeCell;
+  if (action.payload.cell) {
+    cell = action.payload.cell;
+  }
+
+  const cellId = uuid();
+  return state.update("notebook", (notebook: ImmutableNotebook) => {
+    const index = notebook.get("cellOrder", List()).indexOf(id) + 1;
+    return insertCellAt(notebook, cell, cellId, index);
+  });
+}
+
+function mergeWithNextCell(
+  state: NotebookModel,
+  action: actionTypes.MergeWithNextCell
+): RecordOf<DocumentRecordProps> {
+  const id = action.payload.id ? action.payload.id : state.cellFocused;
+  if (!id) {
+    return state;
+  }
+
+  const { cellType } = action.payload;
+  let cell: ImmutableCell =
+    cellType === "markdown" ? emptyMarkdownCell : emptyCodeCell;
+  if (action.payload.cell) {
+    cell = action.payload.cell;
+  }
+  const cellId = uuid();
+  return state.update("notebook", (notebook: ImmutableNotebook) => {
+    const cellOrder: List<CellId> = notebook.get("cellOrder", List());
+    const index = cellOrder.indexOf(id);
+    return insertCellAt(notebook, cell, cellId, index);
+  });
+}
+
+
 function createCellAppend(
   state: NotebookModel,
   action: actionTypes.CreateCellAppend
@@ -917,6 +964,8 @@ type DocumentAction =
   | actionTypes.DeleteCell
   | actionTypes.CreateCellBelow
   | actionTypes.CreateCellAbove
+  | actionTypes.MergeWithPreviousCell
+  | actionTypes.MergeWithNextCell
   | actionTypes.CreateCellAppend
   | actionTypes.ToggleCellOutputVisibility
   | actionTypes.ToggleCellInputVisibility
@@ -989,6 +1038,10 @@ export function notebook(
       return createCellBelow(state, action);
     case actionTypes.CREATE_CELL_ABOVE:
       return createCellAbove(state, action);
+    case actionTypes.MERGE_WITH_PREVIOUS_CELL:
+      return mergeWithPreviousCell(state, action);
+    case actionTypes.MERGE_WITH_NEXT_CELL:
+      return mergeWithNextCell(state, action);      
     case actionTypes.CREATE_CELL_APPEND:
       return createCellAppend(state, action);
     case actionTypes.TOGGLE_CELL_OUTPUT_VISIBILITY:

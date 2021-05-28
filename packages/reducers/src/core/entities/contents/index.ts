@@ -305,6 +305,7 @@ export const byRef = (
     case actionTypes.DELETE_CELL:
     case actionTypes.CREATE_CELL_BELOW:
     case actionTypes.CREATE_CELL_ABOVE:
+    case actionTypes.MERGE_CELL:
     case actionTypes.CREATE_CELL_APPEND:
     case actionTypes.TOGGLE_CELL_OUTPUT_VISIBILITY:
     case actionTypes.TOGGLE_CELL_INPUT_VISIBILITY:

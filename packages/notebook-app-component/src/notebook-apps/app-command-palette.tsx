@@ -17,12 +17,15 @@ import {
 
 const isMac = os.platform() === "darwin";
 const commandOrControl = isMac ? "⌘" : "Ctrl";
+const optionOrAlt = isMac ? "Option" : "Alt";
 
 const actions = {
   HIDE_MENU: "HIDE_MENU",
   RUN_CELL: "RUN_CELL",
   CREATE_CELL_ABOVE: "CREATE_CELL_ABOVE",
   CREATE_CELL_BELOW: "CREATE_CELL_BELOW",
+  MERGE_WITH_PREVIOUS_CELL: "MERGE_WITH_PREVIOUS_CELL",
+  MERGE_WITH_NEXT_CELL: "MERGE_WITH_NEXT_CELL",  
   CONVERT_TO_MARKDOWN: "CONVERT_TO_MARKDOWN",
   HIDE_OUTPUT: "HIDE_OUTPUT",
   HIDE_INPUT: "HIDE_INPUT",
@@ -70,6 +73,26 @@ function getFilters(handlers: any): Filter[] {
       shortcut: "ctrl+shift+a",
     },
     {
+      id: actions.MERGE_WITH_PREVIOUS_CELL,
+      icon: <Icons.AddCell />,
+      onClick: () => {
+        handlers[actions.MERGE_WITH_PREVIOUS_CELL]();
+      },
+      displayShortcut: ["Shift", optionOrAlt, "B"],
+      text: "Merge with Previous Cell",
+      shortcut: "shift+alt+m",
+    },
+    {
+      id: actions.MERGE_WITH_NEXT_CELL,
+      icon: <Icons.AddCell />,
+      onClick: () => {
+        handlers[actions.MERGE_WITH_NEXT_CELL]();
+      },
+      displayShortcut: [optionOrAlt, "M"],
+      text: "Merge with Next Cell",
+      shortcut: "alt+m",
+    },    
+    {
       id: actions.CONVERT_TO_MARKDOWN,
       icon: <Icons.Markdown />,
       onClick: () => {
@@ -106,6 +129,8 @@ function getHandlers({
   restartAndRun,
   addCellAbove,
   addCellBelow,
+  mergeWithPreviousCell,
+  mergeWithNextCell,
   hideOutput,
   hideInput,
   onToggleVisibility,
@@ -124,6 +149,14 @@ function getHandlers({
       addCellBelow();
       onToggleVisibility();
     },
+    MERGE_WITH_PREVIOUS_CELL: () => {
+      mergeWithPreviousCell();
+      onToggleVisibility();
+    },
+    MERGE_WITH_NEXT_CELL: () => {
+      mergeWithNextCell();
+      onToggleVisibility();
+    },    
     CONVERT_TO_MARKDOWN: () => {
       convertToMarkdown();
       onToggleVisibility();
@@ -233,6 +266,8 @@ const Container = (props: ComponentProps) => {
             {...props}
             addCellBelow={commandActions.addCellBelow}
             addCellAbove={commandActions.addCellAbove}
+            mergeWithPreviousCell={commandActions.mergeWithPreviousCell}
+            mergeWithNextCell={commandActions.mergeWithNextCell}
             restartAndRun={commandActions.restartAndRun}
             hideOutput={commandActions.hideOutput}
             hideInput={commandActions.hideInput}

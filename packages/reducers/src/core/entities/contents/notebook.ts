@@ -536,6 +536,31 @@ function createCellAbove(
   });
 }
 
+function mergeCell(
+  state: NotebookModel,
+  action: actionTypes.MergeCell
+): RecordOf<DocumentRecordProps> {
+  return state.updateIn(
+    ["notebook", "cellOrder"],
+    (cellOrder: List<CellId>) => {
+      const oldIndex = cellOrder.findIndex(
+        (id: string) => id === action.payload.id
+      );
+      const newIndex =
+        cellOrder.findIndex(
+          (id: string) => id === action.payload.destinationId
+        ) + (action.payload.above ? 0 : 1);
+      if (oldIndex === newIndex) {
+        return cellOrder;
+      }
+      return cellOrder
+        .splice(oldIndex, 1)
+        .splice(newIndex - (oldIndex < newIndex ? 1 : 0), 0, action.payload.id);
+    }
+  );
+}
+
+
 function createCellAppend(
   state: NotebookModel,
   action: actionTypes.CreateCellAppend
@@ -917,6 +942,7 @@ type DocumentAction =
   | actionTypes.DeleteCell
   | actionTypes.CreateCellBelow
   | actionTypes.CreateCellAbove
+  | actionTypes.MergeCell
   | actionTypes.CreateCellAppend
   | actionTypes.ToggleCellOutputVisibility
   | actionTypes.ToggleCellInputVisibility
@@ -989,6 +1015,8 @@ export function notebook(
       return createCellBelow(state, action);
     case actionTypes.CREATE_CELL_ABOVE:
       return createCellAbove(state, action);
+    case actionTypes.MERGE_CELL:
+      return mergeCell(state, action);      
     case actionTypes.CREATE_CELL_APPEND:
       return createCellAppend(state, action);
     case actionTypes.TOGGLE_CELL_OUTPUT_VISIBILITY:

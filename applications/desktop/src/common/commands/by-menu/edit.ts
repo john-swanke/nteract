@@ -87,3 +87,29 @@ export const NewTextCellBelow: DesktopCommand<ReqContent> = {
     source: "",
   }),
 };
+
+export const MergeWithPreviousCell: DesktopCommand<ReqContent> = {
+  name: "MergeWithPreviousCell",
+  props: {
+    contentRef: "required",
+  },
+  makeAction: actions.mergeCell.with({
+    contentRef: "",
+    id: "",
+    destinationId: "",
+    above: false
+  }),
+};
+
+export const MergeWithNextCell: DesktopCommand<ReqContent> = {
+  name: "MergeWithNextCell",
+  props: {
+    contentRef: "required",
+  },
+  makeAction: actions.mergeCell.with({
+    contentRef: "",
+    id: "",
+    destinationId: "",
+    above: false
+  }),
+};

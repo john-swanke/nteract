@@ -65,6 +65,8 @@ class Contents extends React.PureComponent<ContentsProps, IContentsState> {
     COPY_CELL: ["ctrl+shift+c", "meta+shift+c"],
     CREATE_CELL_ABOVE: ["ctrl+shift+a", "meta+shift+a"],
     CREATE_CELL_BELOW: ["ctrl+shift+b", "meta+shift+b"],
+    MERGE_WITH_PREVIOUS_CELL: ["shift+alt+m", "shift+alt+m"],
+    MERGE_WITH_NEXT_CELL: ["alt+m", "meta+shift+m"],
     CUT_CELL: ["ctrl+shift+x", "meta+shift+x"],
     DELETE_CELL: ["ctrl+shift+d", "meta+shift+d"],
     EXECUTE_ALL_CELLS: ["alt+r a"],
@@ -252,6 +254,12 @@ const mapDispatchToProps = (
         dispatch(
           actions.createCellBelow({ cellType: "code", source: "", contentRef })
         ),
+      MERGE_WITH_PREVIOUS_CELL: (cellIdAbove?: string) =>
+        dispatch(actions.mergeCell({ contentRef, destinationId: cellIdAbove, above: true })),     
+      MERGE_WITH_NEXT_CELL: (cellIdBelow?: string) =>
+        dispatch(
+          actions.mergeCell({ contentRef, destinationId: cellIdBelow, above: false })
+        ),        
       CUT_CELL: () => dispatch(actions.cutCell({ contentRef })),
       DELETE_CELL: () => dispatch(actions.deleteCell({ contentRef })),
       EXECUTE_ALL_CELLS: () =>

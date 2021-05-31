@@ -14,6 +14,8 @@ export interface ComponentProps {
 export interface StateProps {
   type?: CellType;
   executionCount?: ExecutionCount;
+  cellIdAbove?: string;
+  cellIdBelow?: string;
 }
 
 export interface DispatchProps {
@@ -66,6 +68,12 @@ const makeMapStateToProps = (
     const model = selectors.model(state, { contentRef });
     let type: CellType = "code";
     let executionCount: ExecutionCount = null;
+    const cellList = selectors.notebook.cellOrder(model);
+    const indexOfCell = cellList.indexOf(id);
+    const indexAbove = indexOfCell - 1;
+    const indexBelow = indexOfCell + 1;
+    const cellIdAbove = indexAbove < 0 ? undefined : cellList.get(indexAbove);
+    const cellIdBelow = indexBelow >= cellList.count() ? undefined : cellList.get(indexBelow);
 
     if (model && model.type === "notebook") {
       const cell = selectors.notebook.cellById(model, { id });
@@ -74,7 +82,7 @@ const makeMapStateToProps = (
         executionCount = cell.get<ExecutionCount>("execution_count", null);
       }
     }
-    return { type, executionCount };
+    return { type, executionCount, cellIdAbove, cellIdBelow };
   };
   return mapStateToProps;
 };
@@ -123,6 +131,7 @@ const mapDispatchToProps = (
     insertCodeCellAbove: () =>
       dispatch(actions.createCellAbove({ cellType: "code", contentRef })),
     mergeWithPreviousCell: (cellIdAbove?: string) => {
+      window.console.log(cellIdAbove)
       if (!!cellIdAbove) {
         dispatch(actions.mergeCell({ contentRef, id, destinationId: cellIdAbove, above: true }))
       }

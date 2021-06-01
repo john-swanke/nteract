@@ -131,7 +131,6 @@ const mapDispatchToProps = (
     insertCodeCellAbove: () =>
       dispatch(actions.createCellAbove({ cellType: "code", contentRef })),
     mergeWithPreviousCell: (cellIdAbove?: string) => {
-      window.console.log(cellIdAbove)
       if (!!cellIdAbove) {
         dispatch(actions.mergeCell({ contentRef, id, destinationId: cellIdAbove, above: true }))
       }

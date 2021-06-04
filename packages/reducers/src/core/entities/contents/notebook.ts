@@ -543,10 +543,20 @@ function mergeCell(
    // Essentially remove merge cells to create new cell with
    // concatenated source, metadata, etc.
   const {contentRef, id, destinationId, above} = action.payload;
-  const notebook: ImmutableNotebook = state.get("notebook");
-  const newState = state.set("notebook", deleteCell(notebook, destinationId))
-  return newState.set("notebook", deleteCell(notebook, id));
-              
+  const callingCell = state.getIn(["notebook", "cellMap", id]);
+  const destinationCell = state.getIn(["notebook", "cellMap", id]);
+  const concatSource: string = above ? destinationCell.source + "\n" + callingCell.source
+                             : callingCell.source + "\n" + destinationCell.source;
+  const newCell: ImmutableCell = emptyCodeCell.setIn(["source"], concatSource);
+  const cellId = uuid();
+  let latestNotebook: ImmutableNotebook = state.get("notebook");
+  const cellOrder: List<CellId> = latestNotebook.get("cellOrder", List());
+  const index = above ? cellOrder.indexOf(destinationId) : cellOrder.indexOf(id);
+  let newState = state.set("notebook", insertCellAt(latestNotebook, newCell, cellId, index))
+  latestNotebook = newState.get("notebook");
+  newState = newState.set("notebook", deleteCell(latestNotebook, destinationId));
+  latestNotebook = newState.get("notebook");
+  return newState.set("notebook", deleteCell(latestNotebook, id))
 }
 
 

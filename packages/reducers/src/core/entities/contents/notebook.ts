@@ -540,24 +540,13 @@ function mergeCell(
   state: NotebookModel,
   action: actionTypes.MergeCell
 ): RecordOf<DocumentRecordProps> {
-  return state.updateIn(
-    ["notebook", "cellOrder"],
-    (cellOrder: List<CellId>) => {
-      const oldIndex = cellOrder.findIndex(
-        (id: string) => id === action.payload.id
-      );
-      const newIndex =
-        cellOrder.findIndex(
-          (id: string) => id === action.payload.destinationId
-        ) + (action.payload.above ? 0 : 1);
-      if (oldIndex === newIndex) {
-        return cellOrder;
-      }
-      return cellOrder
-        .splice(oldIndex, 1)
-        .splice(newIndex - (oldIndex < newIndex ? 1 : 0), 0, action.payload.id);
-    }
-  );
+   // Essentially remove merge cells to create new cell with
+   // concatenated source, metadata, etc.
+  const {contentRef, id, destinationId, above} = action.payload;
+  const notebook: ImmutableNotebook = state.get("notebook");
+  const newState = state.set("notebook", deleteCell(notebook, destinationId))
+  return newState.set("notebook", deleteCell(notebook, id));
+              
 }
 
 

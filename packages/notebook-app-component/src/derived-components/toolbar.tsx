@@ -371,8 +371,9 @@ export default class Toolbar extends React.PureComponent<
                       </CellMenuSection>
                       <CellMenuSection>
                         <CellMenuItem
-                          onClick={this.performActionAndClose(
-                            context.mergeWithPreviousCell
+                          onClick={this.performActionWithArgAndClose(
+                            context.mergeWithPreviousCell,
+                            context.cellIdAbove
                           )}
                           tabIndex={0}
                         >
@@ -380,8 +381,9 @@ export default class Toolbar extends React.PureComponent<
                           <a>Merge with Previous Cell</a>
                         </CellMenuItem>
                         <CellMenuItem
-                          onClick={this.performActionAndClose(
-                            context.mergeWithNextCell
+                          onClick={this.performActionWithArgAndClose(
+                            context.mergeWithNextCell,
+                            context.cellIdBelow
                           )}
                           tabIndex={0}
                         >

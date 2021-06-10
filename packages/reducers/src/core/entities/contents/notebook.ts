@@ -540,23 +540,31 @@ function mergeCell(
   state: NotebookModel,
   action: actionTypes.MergeCell
 ): RecordOf<DocumentRecordProps> {
-   // Delete cells to be merged and create new one with merged
-   // content, metadata, etc.
+   // Implementation is to delete both source cells and create new one.
+   // First, create relevant variables to use in reducers.
   const {contentRef, id, destinationId, above} = action.payload;
-  const callingCell = state.getIn(["notebook", "cellMap", id]);
-  const destinationCell = state.getIn(["notebook", "cellMap", destinationId]);
+  const callingCell: ImmutableCell = state.getIn(["notebook", "cellMap", id]);
+  const destinationCell: ImmutableCell = state.getIn(["notebook", "cellMap", destinationId]);
+  const upperCell = above ? destinationCell : callingCell;
   const concatSource: string = above 
                                 ? destinationCell.source + "\n" + callingCell.source 
                                 : callingCell.source + "\n" + destinationCell.source;
   const newCellType = above ? destinationCell.cell_type : callingCell.cell_type;
-  const newCell: ImmutableCell = newCellType === "markdown" 
+  let newCell: ImmutableCell = newCellType === "markdown" 
                                 ? emptyMarkdownCell.setIn(["source"], concatSource) 
                                 : emptyCodeCell.setIn(["source"], concatSource);
   const newCellId = uuid();
   let latestNotebook: ImmutableNotebook = state.get("notebook");
   const cellOrder: List<CellId> = latestNotebook.get("cellOrder", List());
   const newCellIndex = above ? cellOrder.indexOf(destinationId) : cellOrder.indexOf(id);
+  // Maintain output of upper-most cell
+  if (upperCell.cell_type === "code" && !!upperCell.outputs) { 
+    newCell = newCell.setIn(["outputs_hidden"], false)
+                     .setIn(["outputs"], upperCell.outputs);
+    
+  }
   
+  // Next, update state/notebook.
   let newState = state.set("notebook", insertCellAt(latestNotebook, newCell, newCellId, newCellIndex))
   latestNotebook = newState.get("notebook");
   newState = newState.set("notebook", deleteCell(latestNotebook, destinationId));

@@ -507,6 +507,45 @@ describe("createCellAbove", () => {
   })
 });
 
+describe("mergeCell", () => {
+  test("merge with previous cell", () => {
+    // TODO
+    //
+    // const originalState = initialDocument.set("notebook", fixtureCommutable);
+    // const id = originalState.getIn(["notebook", "cellOrder"]).last();
+    // const state = reducers(
+    //   originalState,
+    //   actions.mergeCell({
+    //     contentRef,
+    //     id,
+    //     destinationId: cellIdAbove,
+    //     above: true
+    //   })
+    // );
+    // expect(state.getIn(["notebook", "cellOrder"]).size).toBe(3);
+    // expect(state.getIn(["notebook", "cellOrder"]).last()).toBe(id);
+  });
+  test("merge with next cell", () => {
+    // TODO
+    //
+    // const originalState = initialDocument.set("notebook", fixtureCommutable);
+    // const id = originalState.getIn(["notebook", "cellOrder"]).last();
+    // const state = reducers(
+    //   originalState,
+    //   actions.mergeCell({
+    //     contentRef,
+    //     id,
+    //     destinationId: cellIdAbove,
+    //     above: true
+    //   })
+    // );
+    // expect(state.getIn(["notebook", "cellOrder"]).size).toBe(3);
+    // expect(state.getIn(["notebook", "cellOrder"]).last()).toBe(id);
+    // const insertedCellId = state.getIn(["notebook", "cellOrder", 1]);
+    // expect(state.getIn(["notebook", "cellMap", insertedCellId, "source"])).toEqual("test contents")
+  })
+});
+
 describe("newCellAppend", () => {
   test("appends a new code cell at the end", () => {
     const originalState = initialDocument.set("notebook", fixtureCommutable);

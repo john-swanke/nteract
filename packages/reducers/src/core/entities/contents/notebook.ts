@@ -557,14 +557,17 @@ function mergeCell(
   let latestNotebook: ImmutableNotebook = state.get("notebook");
   const cellOrder: List<CellId> = latestNotebook.get("cellOrder", List());
   const newCellIndex = above ? cellOrder.indexOf(destinationId) : cellOrder.indexOf(id);
+  
+  // Next, update state/notebook.
+  // The newly merged cell will retain the metadata from the upper cell.
+  // Logic can be added if there are important exceptions.
+  newCell = newCell.setIn(["metadata"], upperCell.metadata);
   // Maintain output of upper-most cell
   if (upperCell.cell_type === "code" && !!upperCell.outputs) { 
     newCell = newCell.setIn(["outputs_hidden"], false)
                      .setIn(["outputs"], upperCell.outputs);
     
   }
-  
-  // Next, update state/notebook.
   let newState = state.set("notebook", insertCellAt(latestNotebook, newCell, newCellId, newCellIndex))
   latestNotebook = newState.get("notebook");
   newState = newState.set("notebook", deleteCell(latestNotebook, destinationId));

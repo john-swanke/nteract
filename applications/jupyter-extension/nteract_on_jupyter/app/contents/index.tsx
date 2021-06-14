@@ -255,10 +255,10 @@ const mapDispatchToProps = (
           actions.createCellBelow({ cellType: "code", source: "", contentRef })
         ),
       MERGE_WITH_PREVIOUS_CELL: (cellIdAbove?: string) =>
-        dispatch(actions.mergeCell({ contentRef, destinationId: cellIdAbove, above: true })),     
+        dispatch(actions.mergeCell({ contentRef, id, destinationId: cellIdAbove, above: true })),     
       MERGE_WITH_NEXT_CELL: (cellIdBelow?: string) =>
         dispatch(
-          actions.mergeCell({ contentRef, destinationId: cellIdBelow, above: false })
+          actions.mergeCell({ contentRef, id, destinationId: cellIdBelow, above: false })
         ),        
       CUT_CELL: () => dispatch(actions.cutCell({ contentRef })),
       DELETE_CELL: () => dispatch(actions.deleteCell({ contentRef })),

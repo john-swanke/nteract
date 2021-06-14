@@ -1,6 +1,5 @@
 // tslint:disable:max-line-length
 import { CellId, CellType, ImmutableCell } from "@nteract/commutable";
-import { ContentRef } from "@nteract/core";
 import { Action, HasCell, HasContent, makeActionFunction, MaybeHasCell } from "../utils";
 
 export const CREATE_CELL_BELOW          = "CREATE_CELL_BELOW";
@@ -16,7 +15,7 @@ export const PASTE_CELL                 = "PASTE_CELL";
 export type CreateCellBelow       = Action<typeof CREATE_CELL_BELOW,  MaybeHasCell & { cellType: CellType; cell?: ImmutableCell }>;
 export type CreateCellAbove       = Action<typeof CREATE_CELL_ABOVE,  MaybeHasCell & { cellType: CellType; cell?: ImmutableCell }>;
 export type CreateCellAppend      = Action<typeof CREATE_CELL_APPEND, HasContent   & { cellType: CellType; cell?: ImmutableCell }>;
-export type MergeCell             = Action<typeof MERGE_CELL,         MaybeHasCell & { contentRef: ContentRef; id: CellId; destinationId: CellId; above: boolean }>;
+export type MergeCell             = Action<typeof MERGE_CELL,         HasCell      & { destinationId: CellId; above: boolean }>;
 export type MoveCell              = Action<typeof MOVE_CELL,          HasCell      & { destinationId: CellId; above: boolean }>;
 export type DeleteCell            = Action<typeof DELETE_CELL,        MaybeHasCell>;
 export type CutCell               = Action<typeof CUT_CELL,           MaybeHasCell>;

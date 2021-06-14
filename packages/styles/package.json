@@ -18,7 +18,7 @@
     "toolbar.css"
   ],
   "scripts": {
-    "release": "semantic-release -e semantic-release-monorepo"
+    "release": "semantic-release -e semantic-release-monorepo --tag-format='@nteract/styles@${version}'"
   },
   "publishConfig": {
     "access": "public"
@@ -38,7 +38,16 @@
           "preset": "conventionalcommits"
         }
       ],
-      "@semantic-release/npm"
+      "@semantic-release/npm",
+      [
+        "@semantic-release/git",
+        {
+          "assets": [
+            "package.json"
+          ],
+          "message": "chore(release): ${nextRelease.version}"
+        }
+      ]
     ]
   }
 }

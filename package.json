@@ -69,7 +69,7 @@
     "report:all": "npm run report:jext && npm run report:desktop",
     "report:jext": "tsc -b applications/jupyter-extension",
     "report:desktop": "tsc -b applications/desktop",
-    "release": "lerna run release",
+    "release": "lerna run release -- --branches main",
     "clean": "lerna clean --yes && npm run build:clean && rimraf node_modules",
     "lint:jupyterExtension": "cd ./applications/jupyter-extension && black --config ./pyproject.toml --check .",
     "prepare": "husky install"
@@ -155,6 +155,7 @@
     "@commitlint/cli": "^12.1.4",
     "@commitlint/config-conventional": "^12.1.4",
     "@semantic-release/commit-analyzer": "^8.0.1",
+    "@semantic-release/git": "^9.0.0",
     "@semantic-release/npm": "^7.1.3",
     "@strictsoftware/typedoc-plugin-monorepo": "^0.2.1",
     "@types/codemirror": "^0.0.109",

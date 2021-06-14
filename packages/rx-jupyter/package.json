@@ -5,7 +5,7 @@
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
-    "release": "semantic-release -e semantic-release-monorepo"
+    "release": "semantic-release -e semantic-release-monorepo --tag-format='rx-jupyter@${version}'"
   },
   
   "keywords": [
@@ -41,7 +41,16 @@
           "preset": "conventionalcommits"
         }
       ],
-      "@semantic-release/npm"
+      "@semantic-release/npm",
+      [
+        "@semantic-release/git",
+        {
+          "assets": [
+            "package.json"
+          ],
+          "message": "chore(release): ${nextRelease.version}"
+        }
+      ]
     ]
   }
 }

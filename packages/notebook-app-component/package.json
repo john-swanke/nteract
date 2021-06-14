@@ -6,7 +6,7 @@
   "types": "lib/index.d.ts",
   "nteractDesktop": "src/index.ts",
   "scripts": {
-    "release": "semantic-release -e semantic-release-monorepo"
+    "release": "semantic-release -e semantic-release-monorepo --tag-format='@nteract/notebook-app-component@${version}'"
   },
   
   "publishConfig": {
@@ -55,7 +55,16 @@
           "preset": "conventionalcommits"
         }
       ],
-      "@semantic-release/npm"
+      "@semantic-release/npm",
+      [
+        "@semantic-release/git",
+        {
+          "assets": [
+            "package.json"
+          ],
+          "message": "chore(release): ${nextRelease.version}"
+        }
+      ]
     ]
   }
 }

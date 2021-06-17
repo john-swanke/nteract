@@ -6,7 +6,7 @@ import { AppState, createContentRef, createKernelRef, KernelStatus, makeAppRecor
 import * as Immutable from "immutable";
 import { combineReducers, createStore, Store } from "redux";
 import { Subject } from "rxjs";
-export { fixtureCommutable, fixture, fixtureJSON } from "./fixture-nb";
+export { fixtureCommutable, bigfixtureCommutable, fixture, fixtureJSON } from "./fixture-nb";
 
 const rootReducer = combineReducers({
   app: (state = makeAppRecord()) => state,

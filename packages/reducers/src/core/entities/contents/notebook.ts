@@ -542,7 +542,7 @@ function mergeCell(
 ): RecordOf<DocumentRecordProps> {
    // Implementation is to delete both source cells and create new one.
    // First, create relevant variables to use in reducers.
-  const {contentRef, id, destinationId, above} = action.payload;
+  const {id, destinationId, above} = action.payload;
   const callingCell: ImmutableCell = state.getIn(["notebook", "cellMap", id]);
   const destinationCell: ImmutableCell = state.getIn(["notebook", "cellMap", destinationId]);
   const upperCell = above ? destinationCell : callingCell;

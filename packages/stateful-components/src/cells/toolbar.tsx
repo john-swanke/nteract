@@ -68,12 +68,8 @@ const makeMapStateToProps = (
     const model = selectors.model(state, { contentRef });
     let type: CellType = "code";
     let executionCount: ExecutionCount = null;
-    const cellList = selectors.notebook.cellOrder(model);
-    const indexOfCell = cellList.indexOf(id);
-    const indexAbove = indexOfCell - 1;
-    const indexBelow = indexOfCell + 1;
-    const cellIdAbove = indexAbove < 0 ? undefined : cellList.get(indexAbove);
-    const cellIdBelow = indexBelow >= cellList.count() ? undefined : cellList.get(indexBelow);
+    let cellIdAbove: any = null;
+    let cellIdBelow: any = null;
 
     if (model && model.type === "notebook") {
       const cell = selectors.notebook.cellById(model, { id });
@@ -81,6 +77,13 @@ const makeMapStateToProps = (
         type = cell.get<CellType>("cell_type", "code");
         executionCount = cell.get<ExecutionCount>("execution_count", null);
       }
+
+      const cellList = selectors.notebook.cellOrder(model);
+      const indexOfCell = cellList.indexOf(id);
+      const indexAbove = indexOfCell - 1;
+      const indexBelow = indexOfCell + 1;
+      cellIdAbove = indexAbove < 0 ? undefined : cellList.get(indexAbove);
+      cellIdBelow = indexBelow >= cellList.count() ? undefined : cellList.get(indexBelow);
     }
     return { type, executionCount, cellIdAbove, cellIdBelow };
   };

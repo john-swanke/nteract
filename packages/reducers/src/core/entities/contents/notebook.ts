@@ -540,39 +540,44 @@ function mergeCell(
   state: NotebookModel,
   action: actionTypes.MergeCell
 ): RecordOf<DocumentRecordProps> {
-   // Implementation is to delete both source cells and create new one.
-   // First, create relevant variables to use in reducers.
-  const {id, destinationId, above} = action.payload;
+  // Implementation is to delete both source cells and create new one.
+  // First, create relevant variables to use in reducers.
+  const { id, destinationId, above } = action.payload;
   const callingCell: ImmutableCell = state.getIn(["notebook", "cellMap", id]);
   const destinationCell: ImmutableCell = state.getIn(["notebook", "cellMap", destinationId]);
+  if (!callingCell || !destinationCell) {
+    // don't proceed if cells are null to prevent null reference
+    return state;
+  }
   const upperCell = above ? destinationCell : callingCell;
-  const concatSource: string = above 
-                                ? destinationCell.source + "\n" + callingCell.source 
-                                : callingCell.source + "\n" + destinationCell.source;
+  const concatSource: string = above
+    ? destinationCell.source + "\n" + callingCell.source
+    : callingCell.source + "\n" + destinationCell.source;
   const newCellType = above ? destinationCell.cell_type : callingCell.cell_type;
-  let newCell: ImmutableCell = newCellType === "markdown" 
-                                ? emptyMarkdownCell.setIn(["source"], concatSource) 
-                                : emptyCodeCell.setIn(["source"], concatSource);
+  let newCell: ImmutableCell =
+    newCellType === "markdown"
+      ? emptyMarkdownCell.setIn(["source"], concatSource)
+      : emptyCodeCell.setIn(["source"], concatSource);
   const newCellId = uuid();
   let latestNotebook: ImmutableNotebook = state.get("notebook");
   const cellOrder: List<CellId> = latestNotebook.get("cellOrder", List());
   const newCellIndex = above ? cellOrder.indexOf(destinationId) : cellOrder.indexOf(id);
-  
+
   // Next, update state/notebook.
   // The newly merged cell will retain the metadata from the upper cell.
   // Logic can be added if there are important exceptions.
   newCell = newCell.setIn(["metadata"], upperCell.metadata);
   // Maintain output of upper-most cell
-  if (upperCell.cell_type === "code" && !!upperCell.outputs) { 
-    newCell = newCell.setIn(["outputs_hidden"], false)
-                     .setIn(["outputs"], upperCell.outputs);
-    
+  if (upperCell.cell_type === "code" && !!upperCell.outputs) {
+    newCell = newCell.setIn(["outputs_hidden"], false).setIn(["outputs"], upperCell.outputs);
   }
-  let newState = state.set("notebook", insertCellAt(latestNotebook, newCell, newCellId, newCellIndex))
+  let newState = state
+    .set("notebook", insertCellAt(latestNotebook, newCell, newCellId, newCellIndex))
+    .set("cellFocused", newCellId);
   latestNotebook = newState.get("notebook");
   newState = newState.set("notebook", deleteCell(latestNotebook, destinationId));
   latestNotebook = newState.get("notebook");
-  return newState.set("notebook", deleteCell(latestNotebook, id))
+  return newState.set("notebook", deleteCell(latestNotebook, id));
 }
 
 

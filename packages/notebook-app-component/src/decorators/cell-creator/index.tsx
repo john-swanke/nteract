@@ -33,6 +33,18 @@ interface DispatchProps {
     source: string;
     contentRef: ContentRef;
   }) => void;
+  mergeWithPreviousCell: (payload: {
+    contentRef: ContentRef;
+    id: string;
+    destinationId: string;
+    above: boolean;
+  }) => void;
+  mergeWithNextCell: (payload: {
+    contentRef: ContentRef;
+    id: string;
+    destinationId: string;
+    above: boolean;
+  }) => void;  
 }
 
 export const CellCreatorMenu = styled.div`
@@ -210,7 +222,19 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     id?: string;
     source: string;
     contentRef: ContentRef;
-  }) => dispatch(actions.createCellBelow(payload))
+  }) => dispatch(actions.createCellBelow(payload)),
+  mergeWithPreviousCell: (payload: {
+    contentRef: ContentRef;
+    id: string;
+    destinationId: string;
+    above: boolean;
+  }) => dispatch(actions.mergeCell(payload)),
+  mergeWithNextCell: (payload: {
+    contentRef: ContentRef;
+    id: string;
+    destinationId: string;
+    above: boolean;
+  }) => dispatch(actions.mergeCell(payload))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(CellCreator);

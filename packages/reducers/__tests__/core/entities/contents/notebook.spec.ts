@@ -14,8 +14,8 @@ import * as Immutable from "immutable";
 import { v4 as uuidv4 } from "uuid";
 
 import * as actions from "@nteract/actions";
-import { fixtureCommutable } from "@nteract/fixtures";
-import { makeDocumentRecord } from "@nteract/types";
+import { fixtureCommutable, bigfixtureCommutable } from "@nteract/fixtures";
+import { createContentRef, makeDocumentRecord } from "@nteract/types";
 import {
   cleanCellTransient,
   notebook as reducers,
@@ -504,6 +504,140 @@ describe("createCellAbove", () => {
     expect(state.getIn(["notebook", "cellOrder"]).last()).toBe(id);
     const insertedCellId = state.getIn(["notebook", "cellOrder", 1]);
     expect(state.getIn(["notebook", "cellMap", insertedCellId, "source"])).toEqual("test contents")
+  })
+});
+
+describe("mergeCell", () => {
+  test("merge with previous cell - two code cells", () => {
+    const originalState = initialDocument.set("notebook", bigfixtureCommutable);
+    const id = originalState.getIn(["notebook", "cellOrder", 6]);
+    const destinationId = originalState.getIn(["notebook", "cellOrder", 5]);
+    const mergedCellSource: string = originalState.getIn(["notebook", "cellMap", destinationId, "source"]) + 
+                                    "\n" + originalState.getIn(["notebook", "cellMap", id, "source"]);
+    const state = reducers(
+      originalState,
+      actions.mergeCell({
+        contentRef: undefined,
+        id,
+        destinationId,
+        above: true
+      })
+    );
+    const mergedCellId = state.getIn(["notebook", "cellOrder", 5]);
+    // Verify number of cells, merged cell content and merged cell type.
+    expect(state.getIn(["notebook", "cellOrder"]).size).toBe(8); // original is 9
+    expect(state.getIn(["notebook", "cellMap", mergedCellId, "source"])).toEqual(mergedCellSource);
+    expect(state.getIn(["notebook", "cellMap", mergedCellId, "cell_type"])).toEqual("code");
+  });
+
+  test("merge with previous cell - two markdown cells", () => {
+    const originalState = initialDocument.set("notebook", bigfixtureCommutable);
+    const id = originalState.getIn(["notebook", "cellOrder", 8]);
+    const destinationId = originalState.getIn(["notebook", "cellOrder", 7]);
+    const mergedCellSource: string = originalState.getIn(["notebook", "cellMap", destinationId, "source"]) + 
+                                    "\n" + originalState.getIn(["notebook", "cellMap", id, "source"]);
+    const state = reducers(
+      originalState,
+      actions.mergeCell({
+        contentRef: undefined,
+        id,
+        destinationId,
+        above: true
+      })
+    );
+    const mergedCellId = state.getIn(["notebook", "cellOrder", 7]);
+    // Verify number of cells, merged cell content and merged cell type.
+    expect(state.getIn(["notebook", "cellOrder"]).size).toBe(8); // original is 9
+    expect(state.getIn(["notebook", "cellMap", mergedCellId, "source"])).toEqual(mergedCellSource);
+    expect(state.getIn(["notebook", "cellMap", mergedCellId, "cell_type"])).toEqual("markdown");
+  });
+
+  test("merge with previous cell - different code types", () => {
+    const originalState = initialDocument.set("notebook", bigfixtureCommutable);
+    const id = originalState.getIn(["notebook", "cellOrder", 1]); // code
+    const destinationId = originalState.getIn(["notebook", "cellOrder", 0]); // markdown
+    const mergedCellSource: string = originalState.getIn(["notebook", "cellMap", destinationId, "source"]) + 
+                                    "\n" + originalState.getIn(["notebook", "cellMap", id, "source"]);
+    const state = reducers(
+      originalState,
+      actions.mergeCell({
+        contentRef: undefined,
+        id,
+        destinationId,
+        above: true
+      })
+    );
+    const mergedCellId = state.getIn(["notebook", "cellOrder", 0]);
+    // Verify number of cells, merged cell content and merged cell type.
+    expect(state.getIn(["notebook", "cellOrder"]).size).toBe(8); // original is 9
+    expect(state.getIn(["notebook", "cellMap", mergedCellId, "source"])).toEqual(mergedCellSource);
+    expect(state.getIn(["notebook", "cellMap", mergedCellId, "cell_type"])).toEqual("markdown");
+  }); 
+
+  test("merge with next cell - two code cells", () => {
+    const originalState = initialDocument.set("notebook", bigfixtureCommutable);
+    const id = originalState.getIn(["notebook", "cellOrder", 5]);
+    const destinationId = originalState.getIn(["notebook", "cellOrder", 6]);
+    const mergedCellSource: string = originalState.getIn(["notebook", "cellMap", id, "source"]) + 
+                                    "\n" + originalState.getIn(["notebook", "cellMap", destinationId, "source"]);
+    const state = reducers(
+      originalState,
+      actions.mergeCell({
+        contentRef: undefined,
+        id,
+        destinationId,
+        above: false
+      })
+    );
+    const mergedCellId = state.getIn(["notebook", "cellOrder", 5]);
+    // Verify number of cells, merged cell content and merged cell type.
+    expect(state.getIn(["notebook", "cellOrder"]).size).toBe(8); // original is 9
+    expect(state.getIn(["notebook", "cellMap", mergedCellId, "source"])).toEqual(mergedCellSource);
+    expect(state.getIn(["notebook", "cellMap", mergedCellId, "cell_type"])).toEqual("code");
+  });
+
+  test("merge with next cell - two markdown cells", () => {
+    const originalState = initialDocument.set("notebook", bigfixtureCommutable);
+    const id = originalState.getIn(["notebook", "cellOrder", 7]);
+    const destinationId = originalState.getIn(["notebook", "cellOrder", 8]);
+    const mergedCellSource: string = originalState.getIn(["notebook", "cellMap", id, "source"]) + 
+                                    "\n" + originalState.getIn(["notebook", "cellMap", destinationId, "source"]);
+    const state = reducers(
+      originalState,
+      actions.mergeCell({
+        contentRef: undefined,
+        id,
+        destinationId,
+        above: false
+      })
+    );
+    const mergedCellId = state.getIn(["notebook", "cellOrder", 7]);
+    // Verify number of cells, merged cell content and merged cell type.
+    expect(state.getIn(["notebook", "cellOrder"]).size).toBe(8); // original is 9
+    expect(state.getIn(["notebook", "cellMap", mergedCellId, "source"])).toEqual(mergedCellSource);
+    expect(state.getIn(["notebook", "cellMap", mergedCellId, "cell_type"])).toEqual("markdown");
+  })
+
+  test("merge with next cell - different code types", () => {
+    const originalState = initialDocument.set("notebook", bigfixtureCommutable);
+    const id = originalState.getIn(["notebook", "cellOrder", 3]);
+    const destinationId = originalState.getIn(["notebook", "cellOrder", 4]);
+    const mergedCellSource: string = originalState.getIn(["notebook", "cellMap", id, "source"]) + 
+                                    "\n" + originalState.getIn(["notebook", "cellMap", destinationId, "source"]);
+    const state = reducers(
+      originalState,
+      actions.mergeCell({
+        contentRef: undefined,
+        id,
+        destinationId,
+        above: false
+      })
+    );
+    const mergedCellId = state.getIn(["notebook", "cellOrder", 3]);
+    // Verify number of cells, merged cell content and merged cell type.
+    expect(state.getIn(["notebook", "cellOrder"]).size).toBe(8); // original is 9
+    expect(state.getIn(["notebook", "cellMap", mergedCellId, "source"])).toEqual(mergedCellSource);
+    expect(state.getIn(["notebook", "cellMap", mergedCellId, "cell_type"])).toEqual("code");
   })
 });
 

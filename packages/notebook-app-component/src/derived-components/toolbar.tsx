@@ -86,6 +86,12 @@ export default class Toolbar extends React.PureComponent<
     this.closeDropdown();
   };
 
+  performActionWithArgAndClose = (action: (arg?:any) => void, arg?:any) => () => {
+    action(arg);
+
+    this.closeDropdown();
+  };
+
   closeDropdown = () => {
     if (this.state.moreActionsMenuExpanded) {
       this.toggleMenuRef.current.click();
@@ -245,6 +251,28 @@ export default class Toolbar extends React.PureComponent<
                         </CellMenuItem>
                       </CellMenuSection>
                       <CellMenuSection>
+                        <CellMenuItem
+                          onClick={this.performActionWithArgAndClose(
+                            context.mergeWithPreviousCell,
+                            context.cellIdAbove
+                          )}
+                          tabIndex={0}
+                        >
+                          <Icons.AddCell />
+                          <a>Merge with Previous Cell</a>
+                        </CellMenuItem>
+                        <CellMenuItem
+                          onClick={this.performActionWithArgAndClose(
+                            context.mergeWithNextCell,
+                            context.cellIdBelow
+                          )}
+                          tabIndex={0}
+                        >
+                          <Icons.AddCell below />
+                          <a>Merge with Next Cell</a>
+                        </CellMenuItem>                        
+                      </CellMenuSection>
+                      <CellMenuSection>
                         <CellMenuItem className="heading">
                           Visibility
                         </CellMenuItem>
@@ -341,6 +369,28 @@ export default class Toolbar extends React.PureComponent<
                           <a>Add Cell Below</a>
                         </CellMenuItem>
                       </CellMenuSection>
+                      <CellMenuSection>
+                        <CellMenuItem
+                          onClick={this.performActionWithArgAndClose(
+                            context.mergeWithPreviousCell,
+                            context.cellIdAbove
+                          )}
+                          tabIndex={0}
+                        >
+                          <Icons.AddCell />
+                          <a>Merge with Previous Cell</a>
+                        </CellMenuItem>
+                        <CellMenuItem
+                          onClick={this.performActionWithArgAndClose(
+                            context.mergeWithNextCell,
+                            context.cellIdBelow
+                          )}
+                          tabIndex={0}
+                        >
+                          <Icons.AddCell below />
+                          <a>Merge with Next Cell</a>
+                        </CellMenuItem>
+                      </CellMenuSection>                      
                     </StyledDropdownContent>
                   )}
                 </DropdownMenu>
